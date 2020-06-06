@@ -25,4 +25,11 @@ class Kernel extends BaseKernel
         $routes->import('../config/{routes}/*.yaml');
         $routes->import('../config/{routes}.yaml');
     }
+
+    public function registerBundles()
+    {
+        $bundles = [
+            new JMS\SerializerBundle\JMSSerializerBundle(),
+        ];
+    }
 }
