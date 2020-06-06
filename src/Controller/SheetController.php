@@ -46,7 +46,8 @@ class SheetController extends AbstractController
             ->getRepository(Language::class)
             ->find($request->request->get('language'));
         $user = $this->getUser();
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->getDoctrine()
+            ->getManager();
         $sheet->setTitle($request->request->get('title'))
             ->setDescription($request->request->get('description'))
             ->setContent($request->request->get('content'))
