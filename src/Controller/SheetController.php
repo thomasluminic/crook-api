@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Language;
 use App\Entity\Sheet;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +25,7 @@ class SheetController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="_show", requirements={"id", "/d+"} methods={"GET"})
+     * @Route("/{id}", name="_show", requirements={"id": "/d+"}, methods={"GET"})
      * @param $id
      * @return JsonResponse
      */
@@ -45,7 +46,9 @@ class SheetController extends AbstractController
         $language = $this->getDoctrine()
             ->getRepository(Language::class)
             ->find($request->request->get('language'));
-        $user = $this->getUser();
+        $user = $this->getDoctrine()
+        ->getRepository(User::class)
+        ->find($request->request->get('user'));
         $entityManager = $this->getDoctrine()
             ->getManager();
         $sheet->setTitle($request->request->get('title'))
@@ -61,7 +64,7 @@ class SheetController extends AbstractController
     }
 
     /**
-     * @Route("/update/{id}", name="_update", requirements={"id", "\d+"}, methods={"PUT"})
+     * @Route("/update/{id}", name="_update", requirements={"id": "\d+"}, methods={"PUT"})
      * @param Request $request
      * @param int $id
      * @return JsonResponse
@@ -90,7 +93,7 @@ class SheetController extends AbstractController
 
     /**
      * @param $id
-     * @Route("/delete/{id}", name="_delete", requirements={"id", "\d+"}, methods={"DELETE"})
+     * @Route("/delete/{id}", name="_delete", requirements={"id": "\d+"}, methods={"DELETE"})
      * @return JsonResponse
      */
     public function delete($id):JsonResponse

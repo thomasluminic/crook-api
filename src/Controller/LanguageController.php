@@ -26,11 +26,11 @@ class LanguageController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="_show", requirements={"id", "/d+"} methods={"GET"})
-     * @param $id
+     * @Route("/{id}", name="_show", requirements={"id": "/d+"}, methods={"GET"})
+     * @param int $id
      * @return JsonResponse
      */
-    public function getOneLanguage($id): JsonResponse
+    public function getOneLanguage(int $id): JsonResponse
     {
         $language = $this->getDoctrine()->getRepository(Language::class)->find($id);
         return new JsonResponse($language);
@@ -56,7 +56,7 @@ class LanguageController extends AbstractController
     }
 
     /**
-     * @Route("/update/{id}", name="_update", requirements={"id", "\d+"}, methods={"PUT"})
+     * @Route("/update/{id}", name="_update", requirements={"id": "\d+"}, methods={"PUT"})
      * @param Request $request
      * @param int $id
      * @return JsonResponse
@@ -77,7 +77,7 @@ class LanguageController extends AbstractController
     }
     /**
      * @param $id
-     * @Route("/delete/{id}", name="_delete", requirements={"id", "\d+"}, methods={"DELETE"})
+     * @Route("/delete/{id}", name="_delete", requirements={"id": "\d+"}, methods={"DELETE"})
      * @return JsonResponse
      */
     public function delete(int $id): JsonResponse
