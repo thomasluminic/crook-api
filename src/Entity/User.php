@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -54,7 +55,7 @@ class User implements UserInterface, \JsonSerializable
     /**
      * @ORM\OneToMany(targetEntity=Sheet::class, mappedBy="user")
      */
-    private ArrayCollection $sheets;
+    private $sheets;
 
     /**
      * @ORM\ManyToMany(targetEntity="Sheet")
@@ -62,7 +63,7 @@ class User implements UserInterface, \JsonSerializable
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="sheet_id", referencedColumnName="id")}
      */
-    private ArrayCollection $favorites;
+    private $favorites;
 
     public function __construct()
     {

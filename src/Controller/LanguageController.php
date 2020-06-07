@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Language;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,29 +10,29 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/language", name="language")
  */
-class LanguageController extends AbstractController
+class LanguageController extends BaseController
 {
     /**
      * @Route("/", name="_index", methods={"GET"})
      */
     public function getAllLanguage(): JsonResponse
     {
-        $languages = $this->getDoctrine()
-            ->getRepository(Language::class)
-            ->findAll();
-
-        return new JsonResponse($languages);
+        return new JsonResponse($this->findAll(self::LANGUAGE_REPOSITORY));
     }
 
     /**
-     * @Route("/{id}", name="_show", requirements={"id", "/d+"} methods={"GET"})
-     * @param $id
+     * @Route("/{id}", name="_show", requirements={"id": "[0-9]+"}, methods={"GET"})
+     * @param int $id
      * @return JsonResponse
+     * @throws \Exception
      */
-    public function getOneLanguage($id): JsonResponse
+    public function getOneLanguage(int $id): JsonResponse
     {
-        $language = $this->getDoctrine()->getRepository(Language::class)->find($id);
-        return new JsonResponse($language);
+            $language = $this->findOne(self::LANGUAGE_REPOSITORY, $id, 'langage');
+            if ($language) {
+                return new JsonResponse($language);
+            }
+            exit;
     }
 
     /**
@@ -56,37 +55,40 @@ class LanguageController extends AbstractController
     }
 
     /**
-     * @Route("/update/{id}", name="_update", requirements={"id", "\d+"}, methods={"PUT"})
+     * @Route("/update/{id}", name="_update", requirements={"id": "[0-9]+"}, methods={"PUT"})
      * @param Request $request
      * @param int $id
+     * @throws \Exception
      * @return JsonResponse
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $language = $this->getDoctrine()
-            ->getRepository(Language::class)
-            ->find($id);
-        $entityManager = $this->getDoctrine()->getManager();
-        $language->setName($request->request->get('name'))
-            ->setColor($request->request->get('color'))
-            ->setImage($request->request->get('name'))
-            ->setUpdateAt(new \DateTime());
-        $entityManager->persist($language);
-        $entityManager->flush();
-        return new JsonResponse('Votre langage à bien était modifier');
+        $language = $this->findOne(self::LANGUAGE_REPOSITORY, $id, self::TYPE_LANGUAGE);
+        if ($language) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $language->setName($request->request->get('name'))
+                ->setColor($request->request->get('color'))
+                ->setImage($request->request->get('name'))
+                ->setUpdateAt(new \DateTime());
+            $entityManager->persist($language);
+            $entityManager->flush();
+            return new JsonResponse('Votre langage à bien était modifier');
+        }
+        exit;
     }
+
     /**
      * @param $id
-     * @Route("/delete/{id}", name="_delete", requirements={"id", "\d+"}, methods={"DELETE"})
+     * @Route("/delete/{id}", name="_delete", requirements={"id": "[0-9]+"}, methods={"DELETE"})
+     * @throws \Exception
      * @return JsonResponse
      */
-    public function delete(int $id): JsonResponse
+    public function deleteLanguage(int $id): JsonResponse
     {
-        $sheet = $this->getDoctrine()->getRepository(Language::class)->find($id);
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($sheet);
-        $entityManager->flush();
-
-        return new JsonResponse('Le langage à bien était supprimé', 200);
+        $isRemoved = $this->delete(self::LANGUAGE_REPOSITORY, $id, self::TYPE_LANGUAGE);
+        if ($isRemoved) {
+            return new JsonResponse('Le '. self::TYPE_LANGUAGE .' à bien était supprimer');
+        }
+        exit;
     }
 }
